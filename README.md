@@ -1,2 +1,3 @@
-# zookeeper
-ZooKeeper
+# Notes on ZooKeeper
+
+* ZooKeeper
