@@ -80,6 +80,7 @@ Sessions offer order guarantees, which means that requests in a session are exec
 * cd foo
 * create node 'value'
 * create node1 'value1'
+* rm /foo
 
 #### Copy
 * cp file:///etc/passwd zk://localhost:2181/passwd
@@ -95,6 +96,12 @@ create /source/znode1/znode11 'Hello' false false true
 
 mirror /source /target
 
+#### Watch
+* watch start <path> [debug] [depth]
+* watch start /foo true
+* create /foo/bar 'bar'
+* set /foo/bar 'bar1'
+* rm /foo/bar
 
 diff
 help
