@@ -103,6 +103,14 @@ mirror /source /target
 * set /foo/bar 'bar1'
 * rm /foo/bar
 
+#### Check
+* check <path> <version>
+
+#### Transactions
+* txn 'create /foo "start"' 'check /foo 0' 'set /foo "end"' 'rm /foo 1'
+
+zero <path> [version]
+
 diff
 help
 pwd
