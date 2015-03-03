@@ -9,6 +9,18 @@ Distributed systems are a zoo. They are chaotic and hard to manage, and ZooKeepe
 * ZooKeeper was designed to be a robust service that enables application developers to focus mainly on their application logic rather than coordination. It exposes a simple API, inspired by the filesystem API, that allows developers to implement common coordination tasks, such as electing a master server, managing group membership, and managing metadata.
 * Having an ensemble of servers enables ZooKeeper to tolerate faults and scale throughput.
 
+## Examples of distributed coordination
+### Name service
+A name service is a service that maps a name to some information associated with that name. A telephone directory is a name service that maps the name of a person to his/her telephone number. In the same way, a DNS service is a name service that maps a domain name to an IP address. In your distributed system, you may want to keep a track of which servers or services are up and running and look up their status by name.
+### Locking
+To allow for serialized access to a shared resource in your distributed system, you may need to implement distributed mutexes.
+### Synchronization
+Hand in hand with distributed mutexes is the need for synchronizing access to shared resources. For example, a producer-consumer queue or a barrier requires synchronization.
+### Configuration management
+Store configuration in one central location and manage it with ease. Existing nodes should be able to detect changes and read them. New nodes should be able to get the latest configuration as soon as they join the system. This also allows you to centrally change the state of your distributed system by changing the centralized configuration through one of the ZooKeeper clients.
+### Leader election
+Your distributed system may have to deal with the problem of nodes going down, and you may want to implement an automatic fail-over strategy.
+
 ## Philosophy of ZooKeeper
 * ZooKeeper does not expose primitives directly
 * Instead, it exposes a file system-like API comprised of a small set of calls that enables applications to implement their own primitives
@@ -16,6 +28,12 @@ Distributed systems are a zoo. They are chaotic and hard to manage, and ZooKeepe
 * Recipes include ZooKeeper operations that manipulate small data nodes, called znodes, that are organized hierarchically as a tree, just like in a file system.
 * The absence of data often conveys important information about a znode. In a master-worker example, for instance, the absence of a master znode means that no master is currently elected
 * Znodes may or may not contain data. If a znode contains any data, the data is stored as a byte array
+
+## Architecture
+ZooKeeper, while being a coordination service for distributed systems, is a distributed application on its own. ZooKeeper follows a simple client-server model where clients are nodes (i.e., machines) that make use of the service, and servers are nodes that provide the service. A collection of ZooKeeper servers forms a ZooKeeper ensemble. At any given time, one ZooKeeper client is connected to one ZooKeeper server. Each ZooKeeper server can handle a large number of client connections at the same time. Each client periodically sends pings to the ZooKeeper server it is connected to let it know that it is alive and connected. The ZooKeeper server in question responds with an acknowledgment of the ping, indicating the server is alive as well. When the client doesn't receive an acknowledgment from the server within the specified time, the client connects to another server in the ensemble, and the client session is transparently transferred over to the new ZooKeeper server.
+
+## Data Model
+ZooKeeper has a file system-like data model composed of znodes. Think of znodes (ZooKeeper data nodes) as files in a traditional UNIX-like system, except that they can have child nodes. Another way to look at them is as directories that can have data associated with themselves. Each of these directories is called a znode. Figure 2 shows a diagram representing the same hierarchy as sports team in two cities.
 
 ## API Overview
 * create /path data: Creates a znode named with /path and containing data
@@ -137,3 +155,8 @@ connect        find                loop               set_acls
 cons           get                 ls                 summary
 cp             get_acls            mirror             sync
 create         grep                mntr               tree
+
+
+References:
+* http://www.ibm.com/developerworks/library/bd-zookeeper/
+* http://sysgears.com/articles/managing-configuration-of-distributed-system-with-apache-zookeeper/
